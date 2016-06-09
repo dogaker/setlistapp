@@ -1,5 +1,6 @@
 # this gives us the list of songs that were favorites by the user. I need to
 # work on this because for some reason this results in duplicates.
+# I need to clean this code up to avoid duplicates
 
 import json
 import time
