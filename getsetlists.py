@@ -88,9 +88,9 @@ def getsetlists(data, mbid):
                                     songcount += 1
                                     order += 1
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]:
-                                        coverinfo = data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w].get('cover')
+                                        coverinfo = 1
                                     else:
-                                        coverinfo = {'cover': 0}
+                                        coverinfo = 0
                                     song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
                                     livesong += 1
@@ -114,7 +114,7 @@ def getsetlists(data, mbid):
                                 songcount += 1
                                 order += 1
                                 if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']:
-                                    coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('cover')}
+                                    coverinfo = 1
                                 else:
                                     coverinfo = 0
                                 song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
@@ -139,7 +139,7 @@ def getsetlists(data, mbid):
                                     songcount += 1
                                     order += 1
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]:
-                                        coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set']['song'][z].get('cover')}
+                                        coverinfo = 1
                                     else:
                                         coverinfo = 0
                                     song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
@@ -158,7 +158,7 @@ def getsetlists(data, mbid):
                             songcount += 1
                             order += 1
                             if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song']:
-                                coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('cover')}
+                                coverinfo = 1
                             else:
                                 coverinfo = 0
                             song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
