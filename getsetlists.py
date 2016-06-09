@@ -1,16 +1,17 @@
-def setlisthistory(data):
-    ### bringing it all together
+# scrapes all the setlists and puts them in a nice format for pandas
 
-    count = 0
-    count1 = 0
-    count2 = 0
-    count3 = 0
-    count4 = 0
+
+def getsetlists(data, mbid):
+    """given the json dump, gives out a nice dict of dicts for placing in
+    pandas"""
+
+    setlistcount = 0
+    emptysetlistcount = 0
+    songcount = 0
     metadata = {}
     setlist = {}
     concert = 1
     livesong = 1
-
 
     for i in range(0, len(data)):
         for g in range(0, len(data[i]['setlists']['setlist'])):
@@ -20,58 +21,62 @@ def setlisthistory(data):
             if '@id' in data[i]['setlists']['setlist'][g]:
                 eventID = [data[i]['setlists']['setlist'][g].get('@id')]
 
-            #ArtistName
+            # ArtistName
             if '@name' in data[i]['setlists']['setlist'][g]['artist']:
                 artistName = [data[i]['setlists']['setlist'][g]['artist'].get('@name')]
 
-            mbID = {'mbid': mbid}
             # Eventdate
             if '@eventDate' in data[i]['setlists']['setlist'][g]:
                 eventDate = [data[i]['setlists']['setlist'][g].get('@eventDate')]
 
-            #venueName
+            # venueName
             if '@name' in data[i]['setlists']['setlist'][g]['venue']:
                 venueName = [data[i]['setlists']['setlist'][g]['venue'].get('@name')]
 
-            #venueID
+            # venueID
             if '@id' in data[i]["setlists"]["setlist"][g]["venue"]:
                 venueID = [data[i]["setlists"]["setlist"][g]["venue"].get("@id")]
 
-            #cityName
+            # cityName
             if '@name' in data[i]['setlists']['setlist'][g]['venue']['city']:
                 city = [data[i]['setlists']['setlist'][g]['venue']['city'].get('@name')]
 
-            #stateCode
+            # stateCode
             if '@stateCode' in data[i]['setlists']['setlist'][g]['venue']['city']:
                 stateCode = [data[i]['setlists']['setlist'][g]['venue']['city'].get('@stateCode')]
 
-            #countryName
+            # countryName
             if '@name' in data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"]:
                 country = [data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"].get("@name")]
 
-            #countryCode
+            # countryCode
             if '@code' in data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"]:
                 countryCode = [data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"].get("@code")]
 
-            #tourName
+            # tourName
             if '@tour' in data[i]['setlists']['setlist'][g]:
                 tour = [data[i]['setlists']['setlist'][g].get('@tour')]
 
-            meta = {'concert'+str(concert):{'eventID': eventID, 'artistName':artistName, 'mbID':mbID, 'eventDate':eventDate, 'venueName':venueName, 'venueID':venueID, 'city':city, 'stateCode':stateCode, 'country':country, 'countryCode':countryCode, 'tour':tour}}
+            meta = {'concert'+str(concert): {'eventID': eventID, 'artistName': artistName, 'mbID': mbid, 'eventDate': eventDate, 'venueName': venueName, 'venueID': venueID, 'city': city, 'stateCode': stateCode, 'country': country, 'countryCode': countryCode, 'tour': tour}}
             metadata.update(meta)
             concert += 1
 
-
-    ### the rest of the code works on actually getting each song title, whether they are a cover or not and
-    ### makes a list of dictionaries that matches each song to an eventid along with assigning them encore status
-    ### and the order the song was played in the set
+    # the rest of the code works on actually getting each song title,
+    # whether they are a cover or not and makes a list of dictionaries
+    # that matches each song to an eventid along with assigning them encore
+    # status and the order the song was played in the set
+    # hardcoding seemed to be the most efficient thing to do after various
+    # debugging. the data is user generated and other methods resulted in a
+    # lot of scraping faults. a lot of these if/then statements are for classes
+    # such as a band playing a concert with multiple sets,
+    # playing a concert with only one song sets, etc.
 
             if type(data[i]['setlists']['setlist'][g]['sets']) is dict:
 
                 for z in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set'])):
 
                     order = 0
-                    count +=1
+                    setlistcount += 1
                     if type(data[i]['setlists']['setlist'][g]['sets']['set']) is list:
                         for w in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'])):
                             song = []
@@ -79,105 +84,97 @@ def setlisthistory(data):
                                 if type(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]) is dict:
                                     songname = data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w].get('@name')
                                     print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
-                                    print i, g, z, w, count, count4
-                                    count4 += 1
+                                    print i, g, z, w, setlistcount, songcount
+                                    songcount += 1
                                     order += 1
-                                    songorder = {'order':order}
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]:
                                         coverinfo = data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w].get('cover')
                                     else:
                                         coverinfo = {'cover': 0}
-                                    song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
-                                    livesong+=1
+                                    livesong += 1
 
                                 else:
                                     print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']
-                                    print i, g, z, w, count, count4
-                                    count4 += 1
+                                    print i, g, z, w, setlistcount, songcount
+                                    songcount += 1
                                     print data['setlist']
                                     print 'error type: setsl[i][g]["song][z] is not dict'
                                     print data['setlist']
                                     print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
-                                    song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
-                                    livesong+=1
+                                    livesong += 1
 
                             elif type(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']) is dict:
-                                songname = {'songname':data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('@name')}
+                                songname = {'songname': data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('@name')}
                                 print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']['@name']
-                                print i, g, z, w, count, count4
-                                count4 += 1
-                                order +=1
-                                songorder = {'order':order}
+                                print i, g, z, w, setlistcount, songcount
+                                songcount += 1
+                                order += 1
                                 if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']:
-                                    coverinfo = {'cover':data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('cover')}
+                                    coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('cover')}
                                 else:
                                     coverinfo = 0
-                                song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                                song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                 setlist.update(song)
-                                livesong+=1
+                                livesong += 1
 
                             else:
-                                print i, g, z, w, count, count4
+                                print i, g, z, w, setlistcount, songcount
                                 print 'something weird here'
                                 print data[i]['setlists']['setlist'][g]['sets'][z]['song'][w]['@name']
-                                song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                                song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                 setlist.update(song)
-                                livesong+=1
+                                livesong += 1
 
                     elif type(data[i]['setlists']['setlist'][g]['sets']['set']) is dict:
                         if type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is list:
                             for z in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set']['song'])):
                                 if type(data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]) is dict:
-                                    songname = {'songname':data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]}
+                                    songname = {'songname': data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]}
                                     print data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]['@name']
-                                    print i, g, z, count, count4
-                                    count4 += 1
-                                    order +=1
-                                    songorder = {'order': order}
+                                    print i, g, z, setlistcount, songcount
+                                    songcount += 1
+                                    order += 1
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]:
-                                        coverinfo = {'cover':data[i]['setlists']['setlist'][g]['sets']['set']['song'][z].get('cover')}
+                                        coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set']['song'][z].get('cover')}
                                     else:
                                         coverinfo = 0
-                                    song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
-                                    livesong+=1
+                                    livesong += 1
 
                                 else:
                                     print "something weird here"
-                                    print i, g, z, count, count4
+                                    print i, g, z, setlistcount, songcount
                                     break
 
                         elif type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is dict:
-                            print i, g, z, count, count4
-                            songname = {'songname':data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('@name')}
+                            print i, g, z, setlistcount, songcount
+                            songname = {'songname': data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('@name')}
                             print [data[i]['setlists']['setlist'][g]['sets']['set']['song']]
-                            count4 +=1
+                            songcount += 1
                             order += 1
-                            songorder = {'order':order}
                             if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song']:
-                                coverinfo = {'cover':data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('cover')}
+                                coverinfo = {'cover': data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('cover')}
                             else:
                                 coverinfo = 0
-                            song = {'song'+str(livesong):{'eventID':eventID, 'order':order, 'songname':songname, 'coverinfo':coverinfo}}
+                            song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                             setlist.update(song)
-                            livesong+=1
-
-
+                            livesong += 1
 
             elif data[i]['setlists']['setlist'][g]['sets'] is u"":
-                count2 +=1
-                print "this setlist among with", count2, "setlists were discarded because they were empty."
+                emptysetlistcount += 1
+                print "this setlist among with", emptysetlistcount, "setlists were discarded because they were empty."
 
             else:
                 print "data[i]['setlists']['setlist'][g]['sets'] is not a dictionary, so what is it?"
-                print 'weird stuff count:', i, g, count, count4
-                count1 +=1
-                setsl.append(data[i]['setlists']['setlist'][g]['sets'].get('set'))
+                print 'weird stuff count:', i, g, setlistcount, songcount
 
-    print "songs scraped:", count4
-    print "setlists scraped:", count
-    print "empty setlists", count2
+    print "songs scraped:", songcount
+    print "setlists scraped:", setlistcount
+    print "empty setlists", emptysetlistcount
     print "donedonedonedone"
     return setlist
