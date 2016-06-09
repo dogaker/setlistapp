@@ -1,28 +1,32 @@
 import json
 import urllib2
-import pandas as pd
 import time
 
-def lastfmuserhistory(username, artistname, apikey):
-    # Based on the last.fm user_id and artist name, this code gets users history of the songs, album, time listened and artist MBID
 
+def lastfmuserhistory(username, artistname, apikey):
+    """User history for the songs listened to by the artist"""
+    # Based on the last.fm user_id and artist name, this code gets users
+    # history of the songs, album, time listened and artist MBID
     mbid = []
     page = 1
     songslistened = {}
     track = 1
 
-
-    # I start with an infinite loop because despite having a totalpages item in the json document, the value is always 0 in the cases I tested.
+    # I start with an infinite loop because despite having a totalpages item in
+    # the json document, the value is always 0 in the cases I tested.
     while True:
         userhistory = urllib2.urlopen('http://ws.audioscrobbler.com/2.0/?method=user.getartisttracks&user='
-                                  + str(username) + '&artist=' + str(artistname).lower() + '&page=' + str(page) + '&api_key='
-                                  + str(apikey) + '&format=json')
+                                      + str(username) + '&artist='
+                                      + str(artistname).lower()
+                                      + '&page=' + str(page) + '&api_key='
+                                      + str(apikey) + '&format=json')
         data = json.load(userhistory)
 
-        #this if clause is what breaks the data when the new page that is loaded in the api has no more new information to report
+        # this if clause is what breaks the data when the new page that is
+        # loaded in the api has no more new information to report
 
         if data['artisttracks']['track'] == []:
-    #        print "success!!!"
+            # print "success!!!"
             break
 
 
@@ -50,14 +54,15 @@ def lastfmuserhistory(username, artistname, apikey):
     #                 albumname = {'albumname': data['artisttracks']['track'][n].get('name')}
 
 #                     songslistened.append([{'trackname': data['artisttracks']['track'][n].get('name')}, {'albumname': data['artisttracks']['track'][n].get('name')}, {'time': data['artisttracks']['track'][n]['date'].get('#text')}, {'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}])
-                    songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
-#                    songslistened.update(songs)
-
-
+                    songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'),
+                                         'albumname': data['artisttracks']['track'][n].get('name'),
+                                         'time': data['artisttracks']['track'][n]['date'].get('#text'),
+                                         'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                    # songslistened.update(songs)
                     print data['artisttracks']['track'][n]['artist']['mbid']
                     print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
-                    n+=1
-                    track +=1
+                    n += 1
+                    track += 1
 
                 else:
                     if data['artisttracks']['track'][n]['artist']['mbid'] == mbidold:
@@ -65,14 +70,9 @@ def lastfmuserhistory(username, artistname, apikey):
 #                         songs = {"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}}
 #                         songslistened.update(songs)
                         songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
-
-
-
-
-
                         print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
-                        n+=1
-                        track +=1
+                        n += 1
+                        track += 1
 
 
 
@@ -83,8 +83,6 @@ def lastfmuserhistory(username, artistname, apikey):
 #                         songs = {"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}}
 #                         songslistened.update(songs)
                         songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
-
-
                         print "Error! mbid conflict! old mbid: " + str(mbidold), "new mbid: " + str(mbid)
                         print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
                         n+=1
