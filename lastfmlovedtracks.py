@@ -6,10 +6,10 @@ import time
 import urllib2
 
 
-def lastfmlovedsongs(username, mbid, apikey):
+def lastfmlovedtracks(username, mbid, apikey):
     """Gives a list of loved songs in lastfm based on the band's mbid"""
     page = 1
-    lovedsongs = {}
+    lovedtracks = {}
     track = 1
 
     userlovedtracks = urllib2.urlopen('http://ws.audioscrobbler.com/2.0/?method=user.getlovedtracks&user=' + str(username) + '&page=' + str(page) + '&api_key=' + str(apikey) + '&format=json')
@@ -24,7 +24,7 @@ def lastfmlovedsongs(username, mbid, apikey):
         for inf in data['lovedtracks']['track']:
             if data['lovedtracks']['track'][n]['artist']['mbid'] == mbid:
                 print data['lovedtracks']['track'][n]['artist']['mbid'], data['lovedtracks']['track'][n]['artist']['name'], data['lovedtracks']['track'][n]['name']
-                lovedsongs.update({"track"+str(track): {'trackname': data['lovedtracks']['track'][n].get('name'), 'albumname': data['lovedtracks']['track'][n]['artist'].get('name'), 'mbid': data['lovedtracks']['track'][n]['artist'].get('mbid')}})
+                lovedtracks.update({"track"+str(track): {'trackname': data['lovedtracks']['track'][n].get('name'), 'albumname': data['lovedtracks']['track'][n]['artist'].get('name'), 'mbid': data['lovedtracks']['track'][n]['artist'].get('mbid')}})
                 track += 1
 
     #         else:
@@ -32,4 +32,4 @@ def lastfmlovedsongs(username, mbid, apikey):
             n += 1
 
     print "success!"
-    return lovedsongs
+    return lovedtracks
