@@ -28,5 +28,4 @@ def setlistdata(mbid):
                                   mbid + '/setlists.json?p=' + str(page))
         data.append(json.load(setlist))
 
-    print "done"
     return data
