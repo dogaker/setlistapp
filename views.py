@@ -4,8 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import psycopg2
-from a_Model import ModelIt
-from lastfmuserhistory import lastfmuserhist
+import lastfmuserhistory
 
 user = 'doa'
 host = 'localhost'
@@ -53,8 +52,8 @@ def userhistory_output():
 
     # just select the Cesareans  from the birth dtabase for the month that the
     # user inputs
-    query = lastfmuserhist(username, artistname,
-                           'ea12d08886bb0a05492c813a99164027')
+    query = lastfmuserhistory.lastfmuserhist(username, artistname,
+                                             'ea12d08886bb0a05492c813a99164027')
     table = pd.DataFrame(query[1]).T
     tracks = []
     for i in range(0, table.shape[0]):
@@ -64,4 +63,5 @@ def userhistory_output():
         tracks.append(dict(trackname=table.iloc[i]['trackname'].decode(
             'utf-8'), albumname=table.iloc[i]['albumname'].decode('utf-8'),
             time=table.iloc[i]['time']))
-    return render_template('output.html', tracks=tracks)
+        the_result = lastfmuserhistory.usertopsong(table)
+    return render_template('output.html', tracks=tracks, the_result=the_result, band_name = artistname)
