@@ -140,7 +140,7 @@ def getsetlists(data, mbid):
                         if type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is list:
                             for z in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set']['song'])):
                                 if type(data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]) is dict:
-                                    songname = data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]
+                                    songname = data[i]['setlists']['setlist'][g]['sets']['set']['song'][z].get('@name')
                                     if type(songname) is dict:
                                         print "this needs to be fixed"
                                         dictcount += 1
