@@ -1,14 +1,9 @@
-# I think we can seriously improve the speed here if I download the entire
-# data first and then run through it. the delay is slowing things down but
-# still I think there is a bottleneck with actually running the calculations
-# as well
-
 import json
 import urllib2
 import time
 
 
-def lastfmuserhist(username, artistname, apikey):
+def lastfmuserhistory(username, artistname, apikey):
     """User history for the songs listened to by the artist"""
     # Based on the last.fm user_id and artist name, this code gets users
     # history of the songs, album, time listened and artist MBID
