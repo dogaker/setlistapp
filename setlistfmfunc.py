@@ -1,9 +1,7 @@
-# For getting the json dump for all the setlists of a band
-
-
 import urllib2
 import json
 import time
+import pandas as pd
 
 
 def setlistdata(mbid):
@@ -17,7 +15,7 @@ def setlistdata(mbid):
     totalshows = int(data['setlists']['@total'])
     print totalshows
 
-    pages = int(totalshows/20)
+    pages = int(totalshows / 20)
     print pages
 
     data = []
@@ -29,8 +27,6 @@ def setlistdata(mbid):
         data.append(json.load(setlist))
 
     return data
-
-# scrapes all the setlists and puts them in a nice format for pandas
 
 
 def getsetlists(data, mbid):
@@ -56,7 +52,8 @@ def getsetlists(data, mbid):
 
             # ArtistName
             if '@name' in data[i]['setlists']['setlist'][g]['artist']:
-                artistName = data[i]['setlists']['setlist'][g]['artist'].get('@name')
+                artistName = data[i]['setlists'][
+                    'setlist'][g]['artist'].get('@name')
 
             # Eventdate
             if '@eventDate' in data[i]['setlists']['setlist'][g]:
@@ -64,7 +61,8 @@ def getsetlists(data, mbid):
 
             # venueName
             if '@name' in data[i]['setlists']['setlist'][g]['venue']:
-                venueName = data[i]['setlists']['setlist'][g]['venue'].get('@name')
+                venueName = data[i]['setlists'][
+                    'setlist'][g]['venue'].get('@name')
 
             # venueID
             if '@id' in data[i]["setlists"]["setlist"][g]["venue"]:
@@ -72,25 +70,30 @@ def getsetlists(data, mbid):
 
             # cityName
             if '@name' in data[i]['setlists']['setlist'][g]['venue']['city']:
-                city = data[i]['setlists']['setlist'][g]['venue']['city'].get('@name')
+                city = data[i]['setlists']['setlist'][
+                    g]['venue']['city'].get('@name')
 
             # stateCode
             if '@stateCode' in data[i]['setlists']['setlist'][g]['venue']['city']:
-                stateCode = data[i]['setlists']['setlist'][g]['venue']['city'].get('@stateCode')
+                stateCode = data[i]['setlists']['setlist'][
+                    g]['venue']['city'].get('@stateCode')
 
             # countryName
             if '@name' in data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"]:
-                country = data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"].get("@name")
+                country = data[i]["setlists"]["setlist"][g][
+                    "venue"]["city"]["country"].get("@name")
 
             # countryCode
             if '@code' in data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"]:
-                countryCode = data[i]["setlists"]["setlist"][g]["venue"]["city"]["country"].get("@code")
+                countryCode = data[i]["setlists"]["setlist"][
+                    g]["venue"]["city"]["country"].get("@code")
 
             # tourName
             if '@tour' in data[i]['setlists']['setlist'][g]:
                 tour = data[i]['setlists']['setlist'][g].get('@tour')
 
-            meta = {'concert'+str(concert): {'eventID': eventID, 'artistName': artistName, 'mbID': mbid, 'eventDate': eventDate, 'venueName': venueName, 'venueID': venueID, 'city': city, 'stateCode': stateCode, 'country': country, 'countryCode': countryCode, 'tour': tour}}
+            meta = {'concert' + str(concert): {'eventID': eventID, 'artistName': artistName, 'mbID': mbid, 'eventDate': eventDate, 'venueName': venueName,
+                                               'venueID': venueID, 'city': city, 'stateCode': stateCode, 'country': country, 'countryCode': countryCode, 'tour': tour}}
             metadata.update(meta)
             concert += 1
 
@@ -115,7 +118,8 @@ def getsetlists(data, mbid):
                             song = []
                             if type(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']) is list:
                                 if type(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]) is dict:
-                                    songname = data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w].get('@name')
+                                    songname = data[i]['setlists']['setlist'][g][
+                                        'sets']['set'][z]['song'][w].get('@name')
                                     if type(songname) is dict:
                                         print "this needs to be fixed"
                                         dictcount += 1
@@ -127,7 +131,8 @@ def getsetlists(data, mbid):
                                         coverinfo = 1
                                     else:
                                         coverinfo = 0
-                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                                    song = {'song' + str(livesong): {
+                                        'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
                                     livesong += 1
 
@@ -139,12 +144,14 @@ def getsetlists(data, mbid):
                                     print 'error type: setsl[i][g]["song][z] is not dict'
                                     print data['setlist']
                                     print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
-                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                                    song = {'song' + str(livesong): {
+                                        'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
                                     livesong += 1
 
                             elif type(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']) is dict:
-                                songname = data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'].get('@name')
+                                songname = data[i]['setlists']['setlist'][
+                                    g]['sets']['set'][z]['song'].get('@name')
                                 if type(songname) is dict:
                                     print "this needs to be fixed"
                                     dictcount += 1
@@ -156,7 +163,8 @@ def getsetlists(data, mbid):
                                     coverinfo = 1
                                 else:
                                     coverinfo = 0
-                                song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                                song = {'song' + str(livesong): {
+                                    'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                 setlist.update(song)
                                 livesong += 1
 
@@ -164,7 +172,8 @@ def getsetlists(data, mbid):
                                 print i, g, z, w, setlistcount, songcount
                                 print 'something weird here'
                                 print data[i]['setlists']['setlist'][g]['sets'][z]['song'][w]['@name']
-                                song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                                song = {'song' + str(livesong): {
+                                    'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                 setlist.update(song)
                                 livesong += 1
 
@@ -172,7 +181,8 @@ def getsetlists(data, mbid):
                         if type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is list:
                             for z in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set']['song'])):
                                 if type(data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]) is dict:
-                                    songname = data[i]['setlists']['setlist'][g]['sets']['set']['song'][z].get('@name')
+                                    songname = data[i]['setlists']['setlist'][
+                                        g]['sets']['set']['song'][z].get('@name')
                                     if type(songname) is dict:
                                         print "this needs to be fixed"
                                         dictcount += 1
@@ -184,7 +194,8 @@ def getsetlists(data, mbid):
                                         coverinfo = 1
                                     else:
                                         coverinfo = 0
-                                    song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                                    song = {'song' + str(livesong): {
+                                        'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
                                     setlist.update(song)
                                     livesong += 1
 
@@ -195,18 +206,21 @@ def getsetlists(data, mbid):
 
                         elif type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is dict:
                             print i, g, z, setlistcount, songcount
-                            songname = data[i]['setlists']['setlist'][g]['sets']['set']['song'].get('@name')
+                            songname = data[i]['setlists']['setlist'][
+                                g]['sets']['set']['song'].get('@name')
                             if type(songname) is dict:
                                 print "this needs to be fixed"
                                 dictcount += 1
-                            print [data[i]['setlists']['setlist'][g]['sets']['set']['song']]
+                            print [data[i]['setlists']['setlist']
+                                   [g]['sets']['set']['song']]
                             songcount += 1
                             order += 1
                             if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song']:
                                 coverinfo = 1
                             else:
                                 coverinfo = 0
-                            song = {'song'+str(livesong): {'eventID': eventID, 'order': order, 'songname': songname, 'coverinfo': coverinfo}}
+                            song = {'song' + str(livesong): {'eventID': eventID, 'order': order,
+                                                             'songname': songname, 'coverinfo': coverinfo}}
                             setlist.update(song)
                             livesong += 1
 
@@ -223,4 +237,21 @@ def getsetlists(data, mbid):
     print "empty setlists", emptysetlistcount
     print "dicts in songnames:", dictcount
     print "donedonedonedone"
-    return setlist, metadata
+
+    metadata = pd.DataFrame(metadata).T
+    setlist = pd.DataFrame(setlist).T
+    setlist_data = pd.merge(setlist, metadata, on=['eventID'])
+    setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
+    ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
+    setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
+    topsetsongs = setlist_data.groupby('shorttrackname')
+    topsetsong = topsetsongs.count().sort_values(
+        by='songname', ascending=[False]).head().index[0]
+    topsetsong = topsetsongs.count().sort_values(
+        by='songname', ascending=[False]).head().index[0]
+    topsetsong = (setlist_data['songname'].loc[
+                  setlist_data['shorttrackname'] == topsetsong]).iloc[0]
+    topsetsongs = topsetsongs.count().sort_values(
+        by='songname', ascending=[False]).index.tolist()
+    counts = {'songs_scraped': songcount, 'setlists_scraped': setlistcount}
+    return setlist_data, topsetsong, topsetsongs, counts
