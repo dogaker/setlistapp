@@ -88,8 +88,8 @@
 
   <div class="container">
    <div class="starter-template">
-     <h1>User History</h1>
-     <p class="lead">Here's the list of songs the user listened to by the band</p>
+     <h1>{{user_name}}'s History</h1>
+     <p class="lead">Here's the list of songs the user listened to by {{band_name}}</p>
    </div>
 
 
@@ -123,6 +123,9 @@
         <p class="lead">I have looked at what you listened to most from {{band_name}}.<br>The result is {{the_result}}</p>
       </div>
 
+    <div class='matplotlib'>
+        <img src="static/temp/{{plotPng}}">
+    </div>
 
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
       <script src="static/js/bootstrap.min.js"></script>
