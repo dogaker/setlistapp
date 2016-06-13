@@ -38,14 +38,14 @@ def userhistory_page_fancy():
     return render_template('userhistory.html', tracks=tracks)
 
 
-@app.route('/input')
+@app.route('/lastfminput')
 def userhistory_input():
-    return render_template('input.html')
+    return render_template('lastfminput.html')
 
 
-@app.route('/output')
+@app.route('/lastfmoutput')
 def userhistory_output():
-    # pull 'birth_month' from input field and store it
+    # pull 'band_name' and 'user_name' from input field and store it
     artistname = request.args.get('band_name')
     username = request.args.get('user_name')
     print artistname, username
@@ -64,4 +64,4 @@ def userhistory_output():
             'utf-8'), albumname=table.iloc[i]['albumname'].decode('utf-8'),
             time=table.iloc[i]['time']))
         the_result = lastfmuserhistory.usertopsong(table)
-    return render_template('output.html', tracks=tracks, the_result=the_result, band_name = artistname, user_name = username)
+    return render_template('lastfmoutput.html', tracks=tracks, the_result=the_result, band_name = artistname, user_name = username)
