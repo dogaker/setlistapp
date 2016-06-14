@@ -5,18 +5,17 @@ import pandas as pd
 
 
 def getmbid(artistname):
-    artistname = str(artistname).lower()
-    setlist = urllib2.urlopen(
-        'http://api.setlist.fm/rest/0.1/search/artists.json?artistName=' + str(artistname).lower().replace(" ", "+"))
-    setlistdata = json.load(setlist)
-    for i in range(0, len(setlistdata['artists']['artist'])):
-        band = setlistdata['artists']['artist'][i]['@name']
-        band = str(band).lower()
-        if band == artistname:
-            print setlistdata['artists']['artist'][i]['@name']
-            print setlistdata['artists']['artist'][i]['@mbid']
-            mbid = setlistdata['artists']['artist'][i]['@mbid']
-            break
+    if type(setlistdata['artists']['artist']) is list:
+        for i in range(0, len(setlistdata['artists']['artist'])):
+            band = setlistdata['artists']['artist'][i]['@name']
+            band = str(band).lower()
+            if band == artistname:
+                print setlistdata['artists']['artist'][i]['@name']
+                print setlistdata['artists']['artist'][i]['@mbid']
+                mbid = setlistdata['artists']['artist'][i]['@mbid']
+                break
+    else:
+        mbid = setlistdata['artists']['artist']['@mbid']
     return mbid
 
 
