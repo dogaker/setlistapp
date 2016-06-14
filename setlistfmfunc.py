@@ -3,9 +3,11 @@ import json
 import time
 import pandas as pd
 
+
 def getmbid(artistname):
     artistname = str(artistname).lower()
-    setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/search/artists.json?artistName=' + str(artistname).lower().replace(" ","+"))
+    setlist = urllib2.urlopen(
+        'http://api.setlist.fm/rest/0.1/search/artists.json?artistName=' + str(artistname).lower().replace(" ", "+"))
     setlistdata = json.load(setlist)
     for i in range(0, len(setlistdata['artists']['artist'])):
         band = setlistdata['artists']['artist'][i]['@name']
@@ -16,6 +18,7 @@ def getmbid(artistname):
             mbid = setlistdata['artists']['artist'][i]['@mbid']
             break
     return mbid
+
 
 def setlistdata(mbid):
     """Connects to the api and downloads all the setlists data for a band
@@ -140,7 +143,8 @@ def getsetlists(data, mbid):
 
                     order = 0
                     setlistcount += 1
-                    # a concert with multiple sets possibly an encore with multiple songs in each set
+                    # a concert with multiple sets possibly an encore with
+                    # multiple songs in each set
                     if type(data[i]['setlists']['setlist'][g]['sets']['set']) is list:
                         for w in range(0, len(data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'])):
                             song = []
@@ -213,7 +217,7 @@ def getsetlists(data, mbid):
                                 print 'something weird here'
                                 print data[i]['setlists']['setlist'][g]['sets'][z]['song'][w]['@name']
                                 if '@encore' in data[i]['setlists']['setlist'][g]['sets']['set'][z]:
-                                        encoreinfo = 1
+                                    encoreinfo = 1
                                 else:
                                     encoreinfo = 0
                                 song = {'song' + str(livesong): {
@@ -293,6 +297,7 @@ def getsetlists(data, mbid):
     setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
     ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
     setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
+    setlist_data = setlist_data.sort_values(['eventDate', 'encoreinfo', 'order'], ascending=[False, True, True])
     topsetsongs = setlist_data.groupby('shorttrackname')
     topsetsong = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).head().index[0]
