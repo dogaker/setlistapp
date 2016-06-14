@@ -297,7 +297,7 @@ def getsetlists(data, mbid):
     setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
     ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
     setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
-    setlist_data = setlist_data.sort_values(['eventDate', 'encoreinfo', 'order'], ascending=[False, True, True])
+    setlist_data = setlist_data.sort_values(['eventDate','eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])
     topsetsongs = setlist_data.groupby('shorttrackname')
     topsetsong = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).head().index[0]
