@@ -55,16 +55,21 @@ def output():
     # user inputs
     query = lastfmuserhistory.lastfmuserhist(username, artistname,
                                              'ea12d08886bb0a05492c813a99164027')
-    usertable = pd.DataFrame(query[1]).T
     tracks = []
+    if query[1]:
+        usertable = pd.DataFrame(query[1]).T
+
+        for i in range(0, 10):
+            print usertable.iloc[i]['trackname']
+            print usertable.iloc[i]['albumname']
+            print usertable.iloc[i]['time']
+            tracks.append(dict(trackname=unicode(usertable.iloc[i]['trackname']), albumname=unicode(usertable.iloc[i]['albumname']),
+                               time=usertable.iloc[i]['time']))
+        userstopsong = lastfmuserhistory.usertopsong(usertable)
+    else:
+        usertable = []
+        userstopsong = []
     setsongs = []
-    for i in range(0, 10):
-        print usertable.iloc[i]['trackname']
-        print usertable.iloc[i]['albumname']
-        print usertable.iloc[i]['time']
-        tracks.append(dict(trackname=unicode(usertable.iloc[i]['trackname']), albumname=unicode(usertable.iloc[i]['albumname']),
-            time=usertable.iloc[i]['time']))
-    userstopsong = lastfmuserhistory.usertopsong(usertable)
     mbid = str(setlistfmfunc.getmbid(artistname))
     setlistdatain = setlistfmfunc.setlistdata(mbid)
     setlisthistory = setlistfmfunc.getsetlists(
