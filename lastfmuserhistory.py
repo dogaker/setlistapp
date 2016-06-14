@@ -17,54 +17,79 @@ def lastfmuserhist(username, artistname, apikey):
     songslistened = {}
     track = 1
 
-    # I start with an infinite loop because despite having a totalpages item in
-    # the json document, the value is always 0 in the cases I tested.
-    while True:
-        userhistory = urllib2.urlopen('http://ws.audioscrobbler.com/2.0/?method=user.getartisttracks&user='
-                                      + str(username) + '&artist='
-                                      + str(artistname).lower()
-                                      + '&page=' + str(page) + '&api_key='
-                                      + str(apikey) + '&format=json')
-        data = json.load(userhistory)
+    try:
+        # I start with an infinite loop because despite having a totalpages item in
+        # the json document, the value is always 0 in the cases I tested.
+        while True:
+            userhistory = urllib2.urlopen('http://ws.audioscrobbler.com/2.0/?method=user.getartisttracks&user='
+                                          + str(username) + '&artist='
+                                          + str(artistname).lower()
+                                          + '&page=' + str(page) + '&api_key='
+                                          + str(apikey) + '&format=json')
+            data = json.load(userhistory)
 
-        # this if clause is what breaks the data when the new page that is
-        # loaded in the api has no more new information to report
-        if data['artisttracks']['track'] == []:
-            # print "success!!!"
-            break
+            # this if clause is what breaks the data when the new page that is
+            # loaded in the api has no more new information to report
+            if data['artisttracks']['track'] == []:
+                # print "success!!!"
+                break
 
-    # this is where the code that actually scrapes the data begins
-    # what this function does is given the artist name it gets the most
-    # listened tracks by the user. also gets mbid code
-        else:
-            n = 0
-            page += 1
-            for inf in data['artisttracks']['track']:
-                time.sleep(0.5)
-                if mbid == []:
-                    mbid = data['artisttracks']['track'][n]['artist']['mbid']
+        # this is where the code that actually scrapes the data begins
+        # what this function does is given the artist name it gets the most
+        # listened tracks by the user. also gets mbid code
+            else:
+                n = 0
+                page += 1
+                for inf in data['artisttracks']['track']:
+                    time.sleep(0.3)
+                    if mbid == []:
+                        mbid = data['artisttracks']['track'][n]['artist']['mbid']
 
-    # the mbidold here is mainly for debugging purposes in case there is multiple mbid's coded for one artist in last.fm
-                    mbidold = mbid
-                    songslistened.update({"track"+str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
-                    print data['artisttracks']['track'][n]['artist']['mbid']
-                    print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
-                    n += 1
-                    track += 1
-
-                else:
-                    if data['artisttracks']['track'][n]['artist']['mbid'] == mbidold:
-                        songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+        # the mbidold here is mainly for debugging purposes in case there is
+        # multiple mbid's coded for one artist in last.fm
+                        mbidold = mbid
+                        songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                                             n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                        print data['artisttracks']['track'][n]['artist']['mbid']
                         print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
                         n += 1
                         track += 1
 
                     else:
-                        mbid = data['artisttracks']['track'][n]['artist']['mbid']
-                        songslistened.update({"track"+str(track):{'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
-                        print "Error! mbid conflict! old mbid: " + str(mbidold), "new mbid: " + str(mbid)
-                        print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
-                        n += 1
-                        track += 1
-    print "Success!"
-    return mbid, songslistened
+                        if data['artisttracks']['track'][n]['artist']['mbid'] == mbidold:
+                            songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                                                 n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                            print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
+                            n += 1
+                            track += 1
+
+                        else:
+                            mbid = data['artisttracks'][
+                                'track'][n]['artist']['mbid']
+                            songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                                                 n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                            print "Error! mbid conflict! old mbid: " + str(mbidold), "new mbid: " + str(mbid)
+                            print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
+                            n += 1
+                            track += 1
+        print "Success!"
+        return mbid, songslistened
+    except KeyError:
+        print "you haven't listened to any songs by this band"
+        songslistened = {}
+        mbid = []
+        return mbid, songslistened
+
+def usertopsong(usersongs):
+    try:
+        """given a dataframe with albumname with trackname column
+        returns the top song listened by the user for the band"""
+        usersongs['shorttrackname'] = usersongs['trackname'].str.strip().str.lower().str.replace(' ', '_')
+        usersongs['shorttrackname'] = usersongs['shorttrackname'].str[:15]
+        usersongs['shorttrackname'] = usersongs['shorttrackname'].str.replace('\_\(.*', '')
+        topsong = usersongs.groupby('shorttrackname').count().sort('trackname', ascending = [False]).index[:1].tolist()
+        topsong = (usersongs['trackname'].loc[usersongs['shorttrackname'] == topsong[0]][0])
+        return topsong
+    except KeyError:
+        topsong = "Unavailable"
+        return topsong
