@@ -9,15 +9,20 @@ def getmbid(artistname):
     setlist = urllib2.urlopen(
         'http://api.setlist.fm/rest/0.1/search/artists.json?artistName=' + str(artistname).lower().replace(" ", "+"))
     setlistdata = json.load(setlist)
+    mbid = []
     if type(setlistdata['artists']['artist']) is list:
         for i in range(0, len(setlistdata['artists']['artist'])):
             band = setlistdata['artists']['artist'][i]['@name']
-            band = str(band).lower()
-            if band == artistname:
-                print setlistdata['artists']['artist'][i]['@name']
-                print setlistdata['artists']['artist'][i]['@mbid']
-                mbid = setlistdata['artists']['artist'][i]['@mbid']
-                return mbid
+            try:
+                band = str(band).lower()
+                if band == artistname:
+                    print setlistdata['artists']['artist'][i]['@name']
+                    print setlistdata['artists']['artist'][i]['@mbid']
+                    mbidx = setlistdata['artists']['artist'][i]['@mbid']
+                    mbid.append(mbidx)
+            except:
+                continue
+        return mbid
     else:
         mbid = setlistdata['artists']['artist']['@mbid']
         return mbid
@@ -26,26 +31,51 @@ def getmbid(artistname):
 def setlistdata(mbid):
     """Connects to the api and downloads all the setlists data for a band
     using the the mbid"""
+    if type(mbid) is list:
+        for i in range(0, len(mbid)):
+            try:
 
-    setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
-                              mbid + '/setlists.json?p=1')
-    data = json.load(setlist)
+                setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
+                                          str(mbid[i]) + '/setlists.json?p=1')
+                data = json.load(setlist)
 
-    totalshows = int(data['setlists']['@total'])
-    print totalshows
+                totalshows = int(data['setlists']['@total'])
+                print totalshows
 
-    pages = int(totalshows / 20)
-    print pages
+                pages = int(totalshows / 20)
+                print pages
 
-    data = []
-    time.sleep(0.5)
-    for page in range(1, pages):
-        time.sleep(0.5)
+                data = []
+                time.sleep(0.5)
+                for page in range(1, pages):
+                    time.sleep(0.5)
+                    setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
+                                              str(mbid[i]) + '/setlists.json?p=' + str(page))
+                    data.append(json.load(setlist))
+
+                return data
+
+            except:
+                continue
+
+    else:
         setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
-                                  mbid + '/setlists.json?p=' + str(page))
-        data.append(json.load(setlist))
+                                          mbid + '/setlists.json?p=1')
+        data = json.load(setlist)
 
-    return data
+        totalshows = int(data['setlists']['@total'])
+        print totalshows
+
+        pages = int(totalshows / 20)
+        print pages
+
+        data = []
+        time.sleep(0.5)
+        for page in range(1, pages):
+            time.sleep(0.5)
+            setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
+                                      mbid + '/setlists.json?p=' + str(page))
+            data.append(json.load(setlist))
 
 
 def getsetlists(data, mbid):
