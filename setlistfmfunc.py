@@ -16,8 +16,8 @@ def getmbid(artistname):
             try:
                 band = str(band).lower()
                 if band == artistname:
-                    print setlistdata['artists']['artist'][i]['@name']
-                    print setlistdata['artists']['artist'][i]['@mbid']
+                    # print setlistdata['artists']['artist'][i]['@name']
+                    # print setlistdata['artists']['artist'][i]['@mbid']
                     mbidx = setlistdata['artists']['artist'][i]['@mbid']
                     mbid.append(mbidx)
             except:
@@ -40,42 +40,43 @@ def setlistdata(mbid):
                 data = json.load(setlist)
 
                 totalshows = int(data['setlists']['@total'])
-                print totalshows
+#                # print totalshows
 
                 pages = int(totalshows / 20)
-                print pages
+#                # print pages
 
                 data = []
-                time.sleep(0.5)
+#                time.sleep(0.5)
                 for page in range(1, pages):
-                    time.sleep(0.5)
+                    #                    time.sleep(0.5)
                     setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
                                               str(mbid[i]) + '/setlists.json?p=' + str(page))
                     data.append(json.load(setlist))
 
-                return data
+                return data, mbid[i]
 
             except:
                 continue
 
     else:
         setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
-                                          mbid + '/setlists.json?p=1')
+                                  mbid + '/setlists.json?p=1')
         data = json.load(setlist)
 
         totalshows = int(data['setlists']['@total'])
-        print totalshows
+#        print totalshows
 
         pages = int(totalshows / 20)
-        print pages
+#        print pages
 
         data = []
-        time.sleep(0.5)
+#        time.sleep(0.5)
         for page in range(1, pages):
-            time.sleep(0.5)
+            #            time.sleep(0.5)
             setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
                                       mbid + '/setlists.json?p=' + str(page))
             data.append(json.load(setlist))
+            return data, mbid
 
 
 def getsetlists(data, mbid):
@@ -186,10 +187,10 @@ def getsetlists(data, mbid):
                                     songname = data[i]['setlists']['setlist'][g][
                                         'sets']['set'][z]['song'][w].get('@name')
                                     if type(songname) is dict:
-                                        print "this needs to be fixed"
+                                        # print "this needs to be fixed"
                                         dictcount += 1
-                                    print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
-                                    print i, g, z, w, setlistcount, songcount
+#                                    print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
+#                                    print i, g, z, w, setlistcount, songcount
                                     songcount += 1
                                     order += 1
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]:
@@ -206,13 +207,14 @@ def getsetlists(data, mbid):
                                     livesong += 1
 
                                 else:
-                                    print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']
-                                    print i, g, z, w, setlistcount, songcount
+                                    #                                    print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']
+                                    # print i, g, z, w, setlistcount, songcount
                                     songcount += 1
-                                    print data['setlist']
-                                    print 'error type: setsl[i][g]["song][z] is not dict'
-                                    print data['setlist']
-                                    print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
+#                                    print data['setlist']
+#                                    print 'error type: setsl[i][g]["song][z] is not dict'
+#                                    print data['setlist']
+# print
+# data[i]['setlists']['setlist'][g]['sets']['set'][z]['song'][w]['@name']
                                     if '@encore' in data[i]['setlists']['setlist'][g]['sets']['set'][z]:
                                         encoreinfo = 1
                                     else:
@@ -226,10 +228,10 @@ def getsetlists(data, mbid):
                                 songname = data[i]['setlists']['setlist'][
                                     g]['sets']['set'][z]['song'].get('@name')
                                 if type(songname) is dict:
-                                    print "this needs to be fixed"
+                                    # print "this needs to be fixed"
                                     dictcount += 1
-                                print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']['@name']
-                                print i, g, z, w, setlistcount, songcount
+#                                print data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']['@name']
+#                                print i, g, z, w, setlistcount, songcount
                                 songcount += 1
                                 order += 1
                                 if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set'][z]['song']:
@@ -246,9 +248,10 @@ def getsetlists(data, mbid):
                                 livesong += 1
 
                             else:
-                                print i, g, z, w, setlistcount, songcount
-                                print 'something weird here'
-                                print data[i]['setlists']['setlist'][g]['sets'][z]['song'][w]['@name']
+                                # print i, g, z, w, setlistcount, songcount
+                                # print 'something weird here'
+                                # print
+                                # data[i]['setlists']['setlist'][g]['sets'][z]['song'][w]['@name']
                                 if '@encore' in data[i]['setlists']['setlist'][g]['sets']['set'][z]:
                                     encoreinfo = 1
                                 else:
@@ -266,10 +269,10 @@ def getsetlists(data, mbid):
                                     songname = data[i]['setlists']['setlist'][
                                         g]['sets']['set']['song'][z].get('@name')
                                     if type(songname) is dict:
-                                        print "this needs to be fixed"
+                                        # print "this needs to be fixed"
                                         dictcount += 1
-                                    print data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]['@name']
-                                    print i, g, z, setlistcount, songcount
+                                    # print data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]['@name']
+                                    # print i, g, z, setlistcount, songcount
                                     songcount += 1
                                     order += 1
                                     if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song'][z]:
@@ -284,20 +287,19 @@ def getsetlists(data, mbid):
                                     livesong += 1
 
                                 else:
-                                    print "something weird here"
-                                    print i, g, z, setlistcount, songcount
+                                    # print "something weird here"
+                                    # print i, g, z, setlistcount, songcount
                                     break
 
                         # one song shows
                         elif type(data[i]['setlists']['setlist'][g]['sets']['set']['song']) is dict:
-                            print i, g, z, setlistcount, songcount
+                            # print i, g, z, setlistcount, songcount
                             songname = data[i]['setlists']['setlist'][
                                 g]['sets']['set']['song'].get('@name')
                             if type(songname) is dict:
-                                print "this needs to be fixed"
+                                # print "this needs to be fixed"
                                 dictcount += 1
-                            print [data[i]['setlists']['setlist']
-                                   [g]['sets']['set']['song']]
+                            # print [data[i]['setlists']['setlist'][g]['sets']['set']['song']]
                             songcount += 1
                             order += 1
                             if 'cover' in data[i]['setlists']['setlist'][g]['sets']['set']['song']:
@@ -312,17 +314,18 @@ def getsetlists(data, mbid):
             # empty setlists
             elif data[i]['setlists']['setlist'][g]['sets'] is u"":
                 emptysetlistcount += 1
-                print "this setlist among with", emptysetlistcount, "setlists were discarded because they were empty."
+                # print "this setlist among with", emptysetlistcount, "setlists
+                # were discarded because they were empty."
 
             else:
-                print "data[i]['setlists']['setlist'][g]['sets'] is not a dictionary, so what is it?"
-                print 'weird stuff count:', i, g, setlistcount, songcount
+                # print "data[i]['setlists']['setlist'][g]['sets'] is not a dictionary, so what is it?"
+                # print 'weird stuff count:', i, g, setlistcount, songcount
 
-    print "songs scraped:", songcount
-    print "setlists scraped:", setlistcount
-    print "empty setlists", emptysetlistcount
-    print "dicts in songnames:", dictcount
-    print "donedonedonedone"
+                # print "songs scraped:", songcount
+                # print "setlists scraped:", setlistcount
+                # print "empty setlists", emptysetlistcount
+                # print "dicts in songnames:", dictcount
+                print "donedonedonedone"
 
     metadata = pd.DataFrame(metadata).T
     setlist = pd.DataFrame(setlist).T
@@ -330,14 +333,15 @@ def getsetlists(data, mbid):
     setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
     ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
     setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
-    setlist_data = setlist_data.sort_values(['eventDate','eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])
+    setlist_data = setlist_data.sort_values(
+        ['eventDate', 'eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])
     topsetsongs = setlist_data.groupby('shorttrackname')
     topsetsong = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).head().index[0]
     topsetsong = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).head().index[0]
     topsetsong = (setlist_data['songname'].loc[
-                  setlist_data['shorttrackname'] == topsetsong]).iloc[0]
+        setlist_data['shorttrackname'] == topsetsong]).iloc[0]
     topsetsongs = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).index.tolist()
     counts = {'songs_scraped': songcount, 'setlists_scraped': setlistcount}
