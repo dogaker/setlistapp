@@ -6,7 +6,7 @@ import pandas as pd
 
 def predictsetlist(data):
 
-    df = setlist[0]
+    df = data
     df = df.sort_values(by = 'eventDate')
     df = df.reset_index(drop=True)
     df['played'] = 1
@@ -32,8 +32,10 @@ def predictsetlist(data):
     for index, row in df.iterrows():
         if row['shorttrackname'] not in livesonglist:
             livesonglist.append(row['shorttrackname'])
-    livesonglist.remove('')
+    if "" in livesonglist:
+        livesonglist.remove('')
 #    len(livesonglist)
+
 
     eventidlist = []
     for index, row in df.iterrows():
@@ -45,21 +47,40 @@ def predictsetlist(data):
     live_song_list_full = len(eventidlist)*livesonglist
     #len(live_song_list_full)
     live_song_full_df = pd.DataFrame({'shorttrackname': live_song_list_full})
+    live_song_full_df = live_song_full_df.reset_index()
     event_id_list_full = len(livesonglist)*eventidlist
     #len(live_song_list_full), len(event_id_list_full)
 
-    mergeleft = pd.DataFrame()
-    mergeleft['eventID'] = event_id_list_full
-    mergeleft = mergeleft.sort_values(by = 'eventID')
-    mergeleft['shorttrackname'] = live_song_full_df
+
+    event_id_list_full_df = pd.DataFrame({'eventID': event_id_list_full})
+
+    event_id_list_full_df = event_id_list_full_df.sort_values(by='eventID').reset_index()
+    event_id_list_full_df = event_id_list_full_df.drop('index', axis=1)
+    event_id_list_full_df = event_id_list_full_df.reset_index()
+
+
+
+    mergeleft = event_id_list_full_df.merge(live_song_full_df, on = 'index')
     mergeleft['eventtrack'] = mergeleft['eventID']+mergeleft['shorttrackname']
 
     df['eventtrack']=df['eventID']+df['shorttrackname']
+#    df = df.drop_duplicates(subset='eventtrack', keep='first')
+
 
     df_full = pd.merge(mergeleft, df, on='eventtrack', how='left')
+    df_full = df_full[df_full.eventID_x != 0]
     df_full.sort_values(by='eventID_x')
 
     grouped_df_full = df_full.groupby('eventID_x')
+
+    groupname = list()
+    for group in grouped_df_full['eventDate']:
+        if pd.isnull(group[1].first_valid_index()):
+            groupname.append(group[0])
+
+    df_full = df_full[~df_full['eventID_x'].isin(groupname)]
+    grouped_df_full = df_full.groupby('eventID_x')
+#    print len(grouped_df_full)
 
     df_full['eventDate'] = grouped_df_full['eventDate'].transform(lambda s: s.loc[s.first_valid_index()])
     df_full['artistName'] = grouped_df_full['artistName'].transform(lambda s: s.loc[s.first_valid_index()])
@@ -111,9 +132,17 @@ def predictsetlist(data):
     y_scores = test1['predictions']
     roc_score = roc_auc_score(y_true, y_scores)
     songspredicted = test1[test1['predictions']>0]
+
     songspredicted = songspredicted.loc[:, (songspredicted != 0).any(axis=0)]
-    songspredicted = {'predictedsongs': [col for col in list(songspredicted) if col.startswith('song_')]}
-    songspredicted = pd.DataFrame(songspredicted)
-    songspredicted['predictedsongs'] = songspredicted['predictedsongs'].str.replace('song_', '')
-    songspredicted['predictedsongs'] = songspredicted['predictedsongs'].str.replace('_', ' ').str.title()
-    return songspredicted, roc_score
+    songspredicted = [col for col in list(songspredicted) if col.startswith('song_')]
+    print songspredicted
+    if songspredicted:
+
+        songspredicted = {'predictedsongs': songspredicted}
+        songspredicted = pd.DataFrame(songspredicted)
+        songspredicted['predictedsongs'] = songspredicted['predictedsongs'].str.replace('song_', '')
+        songspredicted['predictedsongs'] = songspredicted['predictedsongs'].str.replace('_', ' ').str.title()
+        return songspredicted, roc_score
+    else:
+        songspredicted = "I can't predict"
+        return songspredicted, roc_score
