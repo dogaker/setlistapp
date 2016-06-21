@@ -332,9 +332,9 @@ def getsetlists(data, mbid):
     setlist_data = pd.merge(setlist, metadata, on=['eventID'])
     setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
     ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
+    hashnames = setlist_data.set_index('shorttrackname')['songname'].to_dict()
     setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
-    setlist_data = setlist_data.sort_values(
-        ['eventDate', 'eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])
+    setlist_data = setlist_data.sort_values(by=['eventDate', 'eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])
     topsetsongs = setlist_data.groupby('shorttrackname')
     topsetsong = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).head().index[0]
@@ -345,4 +345,4 @@ def getsetlists(data, mbid):
     topsetsongs = topsetsongs.count().sort_values(
         by='songname', ascending=[False]).index.tolist()
     counts = {'songs_scraped': songcount, 'setlists_scraped': setlistcount}
-    return setlist_data, topsetsong, topsetsongs, counts
+    return setlist_data, topsetsong, topsetsongs, counts, hashnames
