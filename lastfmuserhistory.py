@@ -41,7 +41,7 @@ def lastfmuserhist(username, artistname, apikey):
                 n = 0
                 page += 1
                 for inf in data['artisttracks']['track']:
-                    time.sleep(0.3)
+#                    time.sleep(0.3)
                     if mbid == []:
                         mbid = data['artisttracks']['track'][n]['artist']['mbid']
 
@@ -88,8 +88,9 @@ def usertopsong(usersongs):
         usersongs['shorttrackname'] = usersongs['shorttrackname'].str[:15]
         usersongs['shorttrackname'] = usersongs['shorttrackname'].str.replace('\_\(.*', '')
         topsong = usersongs.groupby('shorttrackname').count().sort('trackname', ascending = [False]).index[:1].tolist()
+        topsongs = usersongs.groupby('shorttrackname').count().sort('trackname', ascending = [False]).index[:10].tolist()
         topsong = (usersongs['trackname'].loc[usersongs['shorttrackname'] == topsong[0]][0])
         return topsong
     except KeyError:
         topsong = "Unavailable"
-        return topsong
+        return topsong, topsongslist
