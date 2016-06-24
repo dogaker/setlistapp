@@ -1,8 +1,3 @@
-# I think we can seriously improve the speed here if I download the entire
-# data first and then run through it. the delay is slowing things down but
-# still I think there is a bottleneck with actually running the calculations
-# as well
-
 import json
 import urllib2
 import time
@@ -14,7 +9,7 @@ def lastfmuserhist(username, artistname, apikey):
     # history of the songs, album, time listened and artist MBID
     mbid = []
     page = 1
-    songslistened = {}
+    usersongs = {}
     track = 1
 
     try:
@@ -41,15 +36,16 @@ def lastfmuserhist(username, artistname, apikey):
                 n = 0
                 page += 1
                 for inf in data['artisttracks']['track']:
-#                    time.sleep(0.3)
+                    #                    time.sleep(0.3)
                     if mbid == []:
-                        mbid = data['artisttracks']['track'][n]['artist']['mbid']
+                        mbid = data['artisttracks'][
+                            'track'][n]['artist']['mbid']
 
         # the mbidold here is mainly for debugging purposes in case there is
         # multiple mbid's coded for one artist in last.fm
                         mbidold = mbid
-                        songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
-                                             n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                        usersongs.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                            n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
                         print data['artisttracks']['track'][n]['artist']['mbid']
                         print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
                         n += 1
@@ -57,8 +53,8 @@ def lastfmuserhist(username, artistname, apikey):
 
                     else:
                         if data['artisttracks']['track'][n]['artist']['mbid'] == mbidold:
-                            songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
-                                                 n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                            usersongs.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                                n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
                             print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
                             n += 1
                             track += 1
@@ -66,31 +62,67 @@ def lastfmuserhist(username, artistname, apikey):
                         else:
                             mbid = data['artisttracks'][
                                 'track'][n]['artist']['mbid']
-                            songslistened.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
-                                                 n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
+                            usersongs.update({"track" + str(track): {'trackname': data['artisttracks']['track'][n].get('name'), 'albumname': data['artisttracks']['track'][
+                                n].get('name'), 'time': data['artisttracks']['track'][n]['date'].get('#text'), 'mbid': data['artisttracks']['track'][n]['artist'].get('mbid')}})
                             print "Error! mbid conflict! old mbid: " + str(mbidold), "new mbid: " + str(mbid)
                             print data['artisttracks']['track'][n]['name'], data['artisttracks']['track'][n]['album']['#text'], data['artisttracks']['track'][n]['date']['#text']
                             n += 1
                             track += 1
         print "Success!"
-        return mbid, songslistened
+        return mbid, usersongs
     except KeyError:
         print "you haven't listened to any songs by this band"
-        songslistened = {}
+        usersongs = {}
         mbid = []
-        return mbid, songslistened
+        return mbid, usersongs
+
 
 def usertopsong(usersongs):
     try:
         """given a dataframe with albumname with trackname column
         returns the top song listened by the user for the band"""
-        usersongs['shorttrackname'] = usersongs['trackname'].str.strip().str.lower().str.replace(' ', '_')
+
+        # because there tends to be a lot of mismatch in song names when users
+        # scrobble I strip them and limit the song names to 15 characters with
+        # underscores. this aims at catching the number of the beast, and
+        # the number of the beast(remastered) as the same song
+        # it is not perfect and can be improved but it works good enough for
+        # now. Example problem case is trooper, trooper (remastered), and
+        # trooper (remixed). trooper and trooper (remastered) and trooper are
+        # the same song, but trooper (remix) is a potentially an entirely
+        # different song
+
+        usersongs['shorttrackname'] = usersongs[
+            'trackname'].str.strip().str.lower().str.replace(' ', '_')
         usersongs['shorttrackname'] = usersongs['shorttrackname'].str[:15]
-        usersongs['shorttrackname'] = usersongs['shorttrackname'].str.replace('\_\(.*', '')
-        topsong = usersongs.groupby('shorttrackname').count().sort('trackname', ascending = [False]).index[:1].tolist()
-        topsongs = usersongs.groupby('shorttrackname').count().sort('trackname', ascending = [False]).index[:10].tolist()
-        topsong = (usersongs['trackname'].loc[usersongs['shorttrackname'] == topsong[0]][0])
-        return topsong
+        usersongs['shorttrackname'] = usersongs[
+            'shorttrackname'].str.replace('\_\(.*', '')
+        usersongs['counts'] = usersongs.groupby(['shorttrackname'])[
+            'trackname'].transform('count')
+        usersongs = usersongs.sort_values(by='counts', ascending=[False])
+        topsongslist = usersongs.drop_duplicates(
+            ['shorttrackname']).sort_values(by='counts', ascending=False)
+        median = topsongslist['counts'].median()
+        if len(topsongslist) > 15:
+            topsongslist = topsongslist[['trackname',  'shorttrackname', 'counts']].iloc[
+                :15][topsongslist['counts'] > median]
+        else:
+            topsongslist = topsongslist[['trackname',  'shorttrackname', 'counts']][
+                topsongslist['counts'] > median]
+        topsong = topsongslist.iloc[:1]
+        topsong = topsong.set_index('trackname')['counts'].to_dict()
+        return topsong, topsongslist
     except KeyError:
         topsong = "Unavailable"
+        topsongslist = "Unavailable"
         return topsong, topsongslist
+
+
+def main(username, artistname):
+    usersongs = lastfmuserhist(
+        username, artistname, 'ea12d08886bb0a05492c813a99164027')
+    usertable = pd.DataFrame(usersongs[1]).T
+    usertable['time'] = pd.to_datetime(usertable.time)
+    usertable = usertable.sort_values(['time'], ascending=[False])
+    usertopsongs = usertopsong(usertable)
+    return usertopsongs
