@@ -56,5 +56,5 @@ def output():
     print decision
     return render_template('output.html', decision=decision, setsongs=setlistdf[4], band_name=artistname.title(), topsetsong=topsetsong, topsetsongcount=topsetsongcount, imagepath1=url_for('static', filename=str(setsfigurename)), imagepath2=url_for('static', filename=str(usersongsfigname)))
 
-@app.route('/songquery')
-def songquery():
+#@app.route('/songquery')
+#def songquery():
