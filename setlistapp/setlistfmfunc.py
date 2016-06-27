@@ -48,7 +48,7 @@ def setlistdata(mbid):
                 data = []
                 time.sleep(0.2)
                 for page in range(1, pages):
-                                        time.sleep(0.2)
+                    time.sleep(0.2)
                     setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
                                               str(mbid[i]) + '/setlists.json?p=' + str(page))
                     data.append(json.load(setlist))
@@ -344,10 +344,11 @@ def getsetlists(data, mbid):
     topsetsong = topsetsongslist.iloc[:1]
     topsetsong = topsetsong.set_index('songname')['counts'].to_dict()
     counts = {'songs_scraped': songcount, 'setlists_scraped': setlistcount}
-    setlist_data = setlist_data.sort_values(by=['eventDate', 'eventID', 'order'], ascending=[False, True, True])
+    setlist_data = setlist_data.sort_values(
+        by=['eventDate', 'eventID', 'order'], ascending=[False, True, True])
     concertdummy = setlist_data.iloc[0]['eventDate']
     setlist_data['date'] = setlist_data['eventDate'].dt.strftime('%Y-%m-%d')
-    setsongs=[]
+    setsongs = []
     for i in range(0, 45):
         if concertdummy == setlist_data.iloc[i]['eventDate']:
             setsongs.append(dict(songname=setlist_data.iloc[i]['songname'],
