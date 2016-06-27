@@ -1,9 +1,9 @@
 from flask import render_template, request, url_for
 from setlistapp import app
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
+# from sqlalchemy import create_engine
+# from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
-import psycopg2
+# import psycopg2
 import lastfmuserhistory as lastfm
 import setlistfmfunc as setfm
 import algorithm as algo
@@ -55,3 +55,6 @@ def output():
         decision="You might want to check out some of the songs the will play before you purchase a ticket."
     print decision
     return render_template('output.html', decision=decision, setsongs=setlistdf[4], band_name=artistname.title(), topsetsong=topsetsong, topsetsongcount=topsetsongcount, imagepath1=url_for('static', filename=str(setsfigurename)), imagepath2=url_for('static', filename=str(usersongsfigname)))
+
+@app.route('/songquery')
+def songquery():
