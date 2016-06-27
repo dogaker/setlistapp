@@ -46,9 +46,9 @@ def setlistdata(mbid):
 #                # print pages
 
                 data = []
-                time.sleep(0.1)
+                time.sleep(0.2)
                 for page in range(1, pages):
-                    #                    time.sleep(0.5)
+                                        time.sleep(0.2)
                     setlist = urllib2.urlopen('http://api.setlist.fm/rest/0.1/artist/' +
                                               str(mbid[i]) + '/setlists.json?p=' + str(page))
                     data.append(json.load(setlist))
