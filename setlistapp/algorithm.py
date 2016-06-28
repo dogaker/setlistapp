@@ -88,25 +88,13 @@ def predictsetlist(df):
     df_full = df_full.sort_values(
         by=['eventDate', 'eventID_x', 'order']).reset_index()
 
-    shorttrackname_x_dum = pd.get_dummies(
-        df_full['shorttrackname_x'], prefix='song')
-    tour_dum = pd.get_dummies(df_full['tour'], prefix='tour')
-    eventID_x_dum = pd.get_dummies(df_full['eventID_x'], prefix='id')
-    city_dum = pd.get_dummies(df_full['city'], prefix='city')
-    country_dum = pd.get_dummies(df_full['countryCode'], prefix='country')
+    result = pd.get_dummies(df_full[['shorttrackname_x', 'tour', 'eventID_x', 'city', 'countryCode']], prefix = ['song','tour', 'id', 'city', 'country'])
+    cols = list(result.columns.values)
+    cols.append('new_song')
+    cols.append('played')
+    df_full = df_full.join(result)
+    modeldata = df_full[cols]
 
-    result = pd.concat([df_full, eventID_x_dum, tour_dum,
-                        city_dum, country_dum, shorttrackname_x_dum], axis=1)
-
-    cols = [[col for col in list(result) if col.startswith('tour_')],
-            [col for col in list(result) if col.startswith('id_')],
-            [col for col in list(result) if col.startswith('country_')],
-            [col for col in list(result) if col.startswith('song_')]]
-
-    flattened_cols = [val for sublist in cols for val in sublist]
-    modeldata = result[flattened_cols]
-    modeldata['new_song'] = result['new_song']
-    modeldata['played'] = result['played']
     # modeldata['eventDate']=result['eventDate']
     modeldata = modeldata.dropna()
     train1 = modeldata[:-len(livesonglist)]
