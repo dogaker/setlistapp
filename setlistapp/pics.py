@@ -24,7 +24,7 @@ def setsongsfig(setlistdf, artistname):
     ax.set_xticklabels(labels)
     setsfigurename = str(artistname + '-predsongs.png')
 
-    plt.savefig('/Users/doa/Documents/git/insight/project/setlistapp/static/' + setsfigurename, transparent=True, bbox_inches='tight')
+    plt.savefig('../../static/' + setsfigurename, transparent=True, bbox_inches='tight')
     return setsfigurename
 
 
@@ -47,7 +47,7 @@ def usersongsfig(setlistdf, usersongsdf, username, artistname):
     labels = ['unlikely', '', '', '', '', 'very likely']
     ax.set_xticklabels(labels)
     usersongsfigname = str(username + '-' + artistname + '-predsongs.png')
-    plt.savefig('/Users/doa/Documents/git/insight/project/setlistapp/static/' + usersongsfigname, transparent=True, bbox_inches='tight')
+    plt.savefig('../../static/' + usersongsfigname, transparent=True, bbox_inches='tight')
     return usersongsfigname
 
 
