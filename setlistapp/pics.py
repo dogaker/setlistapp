@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 plt.switch_backend('agg')
 
 
@@ -23,8 +24,9 @@ def setsongsfig(setlistdf, artistname):
     labels = ['unlikely', '', '', '', '', 'very likely']
     ax.set_xticklabels(labels)
     setsfigurename = str(artistname + '-predsongs.png')
-
-    plt.savefig('static/' + setsfigurename, transparent=True, bbox_inches='tight')
+    cwd = os.getcwd()
+    print cwd
+    plt.savefig('setlistapp/static/' + setsfigurename, transparent=True, bbox_inches='tight')
     return setsfigurename
 
 
@@ -47,7 +49,9 @@ def usersongsfig(setlistdf, usersongsdf, username, artistname):
     labels = ['unlikely', '', '', '', '', 'very likely']
     ax.set_xticklabels(labels)
     usersongsfigname = str(username + '-' + artistname + '-predsongs.png')
-    plt.savefig('static/' + usersongsfigname, transparent=True, bbox_inches='tight')
+#    cwd = os.getcwd()
+#    print cwd
+    plt.savefig('setlistapp/static/' + usersongsfigname, transparent=True, bbox_inches='tight')
     return usersongsfigname
 
 
