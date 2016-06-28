@@ -30,7 +30,7 @@ def output():
     artistname = request.args.get('band_name')
     username = request.args.get('user_name')
     print artistname, username
-
+    gc.collect()
     setlistdf = setfm.main(artistname)
     print setlistdf[3]
     topsetsong = setlistdf[1].keys()
