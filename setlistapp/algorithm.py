@@ -89,7 +89,7 @@ def predictsetlist(df):
         by=['eventDate', 'eventID_x', 'order']).reset_index()
 
     #limit to last 8000 songs due to memory problems
-    df_full_truncated = df_full[:-8000]
+    df_full_truncated = df_full[-5000:]
 
     result = pd.get_dummies(df_full_truncated[['shorttrackname_x', 'tour', 'eventID_x', 'city', 'countryCode']], prefix=[
                             'song', 'tour', 'id', 'city', 'country'])
