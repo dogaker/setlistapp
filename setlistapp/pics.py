@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.switch_backend('agg')
 
 
 def setsongsfig(setlistdf, artistname):
