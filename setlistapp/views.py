@@ -8,6 +8,7 @@ import lastfmuserhistory as lastfm
 import setlistfmfunc as setfm
 import algorithm as algo
 import pics
+import gc
 
 # at the moment I'm not adding things to postgres this will come soon
 # user = 'doa'
