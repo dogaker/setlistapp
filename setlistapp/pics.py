@@ -57,6 +57,9 @@ def usersongsfig(setlistdf, usersongsdf, username, artistname):
 
 def main(setlistdf, usersongsdf, username, artistname):
     setsfigurename = setsongsfig(setlistdf, artistname)
-    usersongsfigname = usersongsfig(
-        setlistdf, usersongsdf, username, artistname)
-    return setsfigurename, usersongsfigname
+    if username == 'nothing':
+        return setsfigurename, 'none'
+    else:
+        usersongsfigname = usersongsfig(
+            setlistdf, usersongsdf, username, artistname)
+        return setsfigurename, usersongsfigname
