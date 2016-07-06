@@ -2,6 +2,8 @@ import json
 import urllib2
 import time
 import pandas as pd
+import apikeys
+
 
 def lastfmuserhist(username, artistname, apikey):
     """User history for the songs listened to by the artist"""
@@ -118,9 +120,9 @@ def usertopsong(usersongs):
         return topsong, topsongslist
 
 
-def main(username, artistname):
+def main(username, artistname, lastfmapikey):
     usersongs = lastfmuserhist(
-        username, artistname, 'ea12d08886bb0a05492c813a99164027')
+        username, artistname, apikeys.lastfmapikey)
     usertable = pd.DataFrame(usersongs[1]).T
     usertable['time'] = pd.to_datetime(usertable.time)
     usertable = usertable.sort_values(['time'], ascending=[False])
