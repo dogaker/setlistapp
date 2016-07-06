@@ -33,6 +33,13 @@ table.center {
     font-size: 150%;
 }
 
+.welcome-paragraph{
+    padding-top: 2%;
+    text-align: center;
+    line-height: normal;
+    font-size: 200%;
+    color: white
+}
 
 .starter-template {
   padding-top: 20%;
