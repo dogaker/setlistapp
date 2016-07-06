@@ -17,7 +17,7 @@ img{
   width: auto;
   height:auto;
   margin-top:6%;
-  text-align: center
+  text-align: center;
 }
 
 table.center {
@@ -38,21 +38,29 @@ table.center {
     text-align: center;
     line-height: normal;
     font-size: 200%;
-    color: white
+    color: white;
+}
+
+.contact-info{
+    padding-top: 5%;
+    text-align: left;
+    line-height: normal;
+    font-size: 150%;
+    color: white;
 }
 
 .starter-template {
   padding-top: 20%;
   text-align: center;
   font-size: 200%;
-  color: white
+  color: white;
 }
 
 .output-starter-template {
   padding-top: 10px 10px;
   text-align: center;
   font-size: 150%;
-  color: white
+  color: white;
 }
 
 .genimg{
@@ -82,7 +90,7 @@ table.center {
 
 .resizedTextbox {
     width: 500px;
-    height: 60px
+    height: 60px;
 }
 
 .form-group {
@@ -91,7 +99,7 @@ table.center {
 
 input:placeholder-shown {
     text-align: center;
-    font-size: 75%
+    font-size: 75%;
 }
 
 .formbutton {
@@ -139,4 +147,8 @@ border-bottom:1px solid white;
     table-layout: fixed;
     width: 50%;
     white-space: nowrap;
+}
+
+.iframe{
+    object-position: center;
 }
