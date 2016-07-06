@@ -40,8 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><img style="max-width:230px;"
-             src="../../static/img/setlistor-logo.png"></a>
+                <a class="navbar-brand" href="#"><img style="max-width:230px;" src="../../static/img/setlistor-logo.png"></a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -59,34 +58,42 @@
 
     <div class="container">
 
-    <div class="welcome-paragraph">
-        <h2>KNOW THE SONGS BEFORE YOU GO!</h2>
-        <br></br>
-        <p>Put in a band's name below and setlistör will tell you what they'll play in their next show!</p>
-        <p>If you have a last.fm account, put your user-name into the box on the right and setlistör will tell you whether you should buy a ticket to the show or check out some more songs before you go! If you don't have a last.fm account just leave it blank.</p>
-        <br></br>
-    </div>
-
-    <div class = "query">
-
-      <form  action="/output" method="GET">
-        <div class="form-group">
-          <input type="text":focus class="resizedTextbox" id="band_name" name='band_name' placeholder="artist name">
-          <input type="text":focus class="resizedTextbox" id="user_name" name='user_name' placeholder="last.fm username (optional)">
+        <div class="welcome-paragraph">
+            <h2>KNOW THE SONGS BEFORE YOU GO!</h2>
+            <br></br>
+            <p>Put in a band's name below and setlistör will tell you what they'll play in their next show!</p>
+            <p>If you have a last.fm account, put your user-name into the box on the right and setlistör will tell you whether you should buy a ticket to the show or check out some more songs before you go! If you don't have a last.fm account just leave
+                it blank.</p>
+            <br></br>
         </div>
 
-        <div class="formbutton">
-          <button type="submit">know the songs before you go!</button>
+        <div class="query">
+
+            <form action="/output" method="GET">
+                <div class="form-group">
+                    <input type="text" :focus class="resizedTextbox" id="band_name" name='band_name' placeholder="artist name">
+                    <input type="text" :focus class="resizedTextbox" id="user_name" name='user_name' placeholder="last.fm username (optional)">
+                </div>
+
+                <div class="formbutton">
+                    <button type="submit">know the songs before you go!</button>
+                </div>
+
+            </form>
+
         </div>
 
-      </form>
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../../static/js/bootstrap.min.js"></script>
 
     </div>
-
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="../../static/js/bootstrap.min.js"></script>
-
-  </div> <!-- /.container-->
+    <!-- /.container-->
+    <br></br><br></br><br></br><br></br><br></br>
+    <div id="about" style="text-align: center;">
+        <iframe src="//www.slideshare.net/slideshow/embed_code/key/hHqtO0CYqJvqHN" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;"
+            allowfullscreen> </iframe>
+        <div style="margin-bottom:5px" align=center> <strong> <a href="//www.slideshare.net/secret/hHqtO0CYqJvqHN" title="Open slate demo" target="_blank">setlistör demo</a> </strong> from <strong><a href="//www.slideshare.net/DogaKerestecioglu" target="_blank">Doga Kerestecioglu</a></strong> </div>
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
