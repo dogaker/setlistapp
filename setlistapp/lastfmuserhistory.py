@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import apikeys
 
+lastfmapikey = apikeys.lastfmapikey
 
 def lastfmuserhist(username, artistname, apikey):
     """User history for the songs listened to by the artist"""
@@ -120,7 +121,7 @@ def usertopsong(usersongs):
         return topsong, topsongslist
 
 
-def main(username, artistname, lastfmapikey):
+def main(username, artistname):
     usersongs = lastfmuserhist(
         username, artistname, apikeys.lastfmapikey)
     usertable = pd.DataFrame(usersongs[1]).T
