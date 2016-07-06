@@ -38,7 +38,7 @@ def lastfmuserhist(username, artistname, apikey):
                 n = 0
                 page += 1
                 for inf in data['artisttracks']['track']:
-                    #                    time.sleep(0.3)
+                    time.sleep(0.1)
                     if mbid == []:
                         mbid = data['artisttracks'][
                             'track'][n]['artist']['mbid']
