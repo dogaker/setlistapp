@@ -78,7 +78,7 @@ def output():
             fignames = pics.main(predictions[0], 'nothing', username, artistname)
             print 'fignames: done'
             setsfigurename = fignames[0]
-            return render_template('output.html', setsongs=setlistdf[4], probabilities=predictions[0], band_name=artistname.title(), topsetsong=topsetsong, topsetsongcount=topsetsongcount, imagepath1=url_for('static', filename=str(setsfigurename)))
+            return render_template('nolastfmoutput.html', setsongs=setlistdf[4], probabilities=predictions[0], band_name=artistname.title(), topsetsong=topsetsong, topsetsongcount=topsetsongcount, imagepath1=url_for('static', filename=str(setsfigurename)))
     except:
         return render_template('error.html')
 
