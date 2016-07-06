@@ -27,8 +27,8 @@ table.center {
 
 .navbar-brand,
 .navbar-nav li a {
-    line-height: 100px;
-    height: 100px;
+    line-height: 65px;
+    height: 60px;
     padding-top: 0;
     font-size: 150%;
 }
