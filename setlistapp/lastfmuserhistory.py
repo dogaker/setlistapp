@@ -97,7 +97,7 @@ def usertopsong(usersongs):
 
         usersongs['shorttrackname'] = usersongs[
             'trackname'].str.strip().str.lower().str.replace(' ', '_')
-        usersongs['shorttrackname'] = usersongs['shorttrackname'].str[:15]
+        usersongs['shorttrackname'] = usersongs['shorttrackname'].str[:20]
         usersongs['shorttrackname'] = usersongs[
             'shorttrackname'].str.replace('\_\(.*', '')
         usersongs['counts'] = usersongs.groupby(['shorttrackname'])[

@@ -331,7 +331,7 @@ def getsetlists(data, mbid):
     setlist = pd.DataFrame(setlist).T
     setlist_data = pd.merge(setlist, metadata, on=['eventID'])
     setlist_data['shorttrackname'] = setlist_data['songname'].str.strip(
-    ).str.lower().str.replace(' ', '_').str[:15].str.replace('\_\(.*', '')
+    ).str.lower().str.replace(' ', '_').str[:20].str.replace('\_\(.*', '')
     setlist_data['eventDate'] = pd.to_datetime(setlist_data.eventDate)
     setlist_data = setlist_data.sort_values(
         by=['eventDate', 'eventID', 'encoreinfo', 'order'], ascending=[False, True, True, True])

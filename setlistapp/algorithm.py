@@ -88,7 +88,7 @@ def predictsetlist(df):
     df_full = df_full.sort_values(
         by=['eventDate', 'eventID_x', 'order']).reset_index()
 
-    #limit to last 8000 songs due to memory problems
+    # limit to last 8000 songs due to memory problems
     df_full = df_full[-50000:]
 
     result = pd.get_dummies(df_full[['shorttrackname_x', 'tour', 'eventID_x', 'city', 'countryCode']], prefix=[
@@ -125,6 +125,10 @@ def predictsetlist(df):
     temp
     predictions = temp[['shorttrackname_x', 'probability', 'results']]
     predictions['songname'] = predictions['shorttrackname_x']
+    if set(hashnames.keys()) & set(hashnames.values()):
+        key = set(hashnames.keys()) & set(hashnames.values())
+        for n in key:
+            hashnames.pop(n, None)
     predictions = predictions.replace({'songname': hashnames})
     predictions['probabilitypercentage'] = pd.Series(["{0:.2f}%".format(
         val * 100) for val in predictions['probability']], index=predictions.index)
